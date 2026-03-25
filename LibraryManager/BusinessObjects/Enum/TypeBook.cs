@@ -1,5 +1,7 @@
 ﻿public enum TypeBook
 {
-    value1,
-    value2
+    Aventure,
+    Policier,
+    Jeunesse,
+    Poètique
 }
