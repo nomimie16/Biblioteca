@@ -1,3 +1,6 @@
 <Solution>
+  <Project Path="BusinessObjects/BusinessObjects.csproj" Id="fb331ac3-17b3-4091-a0b4-611fd4caaf6c" />
+  <Project Path="DataAccessLayer/DataAccessLayer.csproj" Id="82afff0b-be25-437c-bd56-08dcd1b9abbb" />
   <Project Path="LibraryManager.App/LibraryManager.App.csproj" />
+  <Project Path="Services/Services.csproj" Id="8a2b1a7a-e077-4919-a986-61448f27f816" />
 </Solution>
