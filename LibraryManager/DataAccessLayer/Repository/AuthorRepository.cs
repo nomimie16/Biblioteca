@@ -1,4 +1,4 @@
-﻿public class AuthorRepository
+﻿public class AuthorRepository : IGenericRepository<Author>
 {
     //"_" stand for intern variable
     private List<Author> _authors;
