@@ -8,10 +8,7 @@ public class Program
         return Host.CreateDefaultBuilder()
             .ConfigureServices(services =>
             {
-                services.AddTransient<IGenericRepository<Book>, BookRepository>();
-                services.AddTransient<IGenericRepository<Author>, AuthorRepository>();
-                services.AddTransient<IGenericRepository<Library>, LibraryRepository>();
-
+                services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
                 // Enregistrement des services
                 services.AddTransient<ICatalogManager, CatalogManager>();
