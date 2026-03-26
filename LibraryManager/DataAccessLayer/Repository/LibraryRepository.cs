@@ -1,23 +1,33 @@
 ﻿public class LibraryRepository : IGenericRepository<Library>
 {
     //"_" stand for intern variable
-    private List<Library> _libraries;
+    private readonly LibraryContext _context;
 
     //to receive the list
-    public LibraryRepository(List<Library> libraries)
+    public LibraryRepository(LibraryContext context)
     {
-        _libraries = libraries;
+        _context = context;
     }
 
     //get all the Library
     public IEnumerable<Library> GetAll()
     {
-        return _libraries;
+        return _context.library.ToList();
     }
 
     //search on Library's id and return the Library
     public Library Get(int id)
     {
-        return _libraries.FirstOrDefault(a => a.Id == id);
+        return _context.library.FirstOrDefault(a => a.Id == id);
     }
+
+    //new method add
+    public Library Add(Library entity)
+    {
+        _context.library.Add(entity);
+        _context.SaveChanges();
+        return entity;
+    }
+
+
 }

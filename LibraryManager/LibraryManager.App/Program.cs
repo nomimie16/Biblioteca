@@ -1,16 +1,26 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 public class Program
 {
-    private static IHost CreateHostBuilder(List <Book> books)
+    private static IHost CreateHostBuilder()
     {
         return Host.CreateDefaultBuilder()
             .ConfigureServices(services =>
             {
-                services.AddSingleton<List<Book>>(books);
                 services.AddTransient<IGenericRepository<Book>, BookRepository>();
+                services.AddTransient<IGenericRepository<Author>, AuthorRepository>();
+                services.AddTransient<IGenericRepository<Library>, LibraryRepository>();
+
+
                 // Enregistrement des services
                 services.AddTransient<ICatalogManager, CatalogManager>();
+                services.AddDbContext<LibraryContext>(options =>
+                {
+                    // Chemin vers la base de données
+                    string dbPath = Path.Combine(Directory.GetCurrentDirectory(), "library.db");
+                    options.UseSqlite($"Data Source={dbPath}");
+                });
             })
             .Build();
     }
@@ -26,23 +36,18 @@ public class Program
             new Book { Id = 5, Name = "Titre 5", Type = TypeBook.Aventure },
         };
 
-        var host = CreateHostBuilder(books);
-        using var serviceScope = host.Services.CreateScope();
-        var services = serviceScope.ServiceProvider;
-        // Récupération du service configuré
-        ICatalogManager catalogManager = services.GetRequiredService<ICatalogManager>();
+        // 1. Créer le host avec la configuration des services
+        var host = CreateHostBuilder();
 
-        //use the service
-        var allCatalog = catalogManager.GetCatalog();
-        var filterredBook = catalogManager.GetCatalog(TypeBook.Aventure);
-        var bookFound = catalogManager.FindBook(1);
+        // 2. Récupérer le service depuis le conteneur DI
+        ICatalogManager catalogManager = host.Services.GetRequiredService<ICatalogManager>();
 
-        //display
-        Console.WriteLine("All items: ");
-        foreach (var book in filterredBook)
+        // 3. Utiliser le service (les dépendances sont automatiquement injectées !)
+        var adventureBooks = catalogManager.GetCatalog(TypeBook.Aventure);
+
+        foreach (var book in adventureBooks)
         {
-            Console.WriteLine($"- {book.Name}");
+            Console.WriteLine(book.Name);
         }
-        Console.WriteLine($"Book found : {bookFound?.Name}");
     }
 }
