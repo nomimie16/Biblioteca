@@ -7,9 +7,10 @@ public class Program
         return Host.CreateDefaultBuilder()
             .ConfigureServices(services =>
             {
-                services.AddSingleton<List<Book>>(books);//create book list
-                services.AddSingleton<BookRepository>();//create bookrepository
-                services.AddScoped<CatalogManager>();//create catalog manager
+                services.AddSingleton<List<Book>>(books);
+                services.AddTransient<IGenericRepository<Book>, BookRepository>();
+                // Enregistrement des services
+                services.AddTransient<ICatalogManager, CatalogManager>();
             })
             .Build();
     }
@@ -29,7 +30,7 @@ public class Program
         using var serviceScope = host.Services.CreateScope();
         var services = serviceScope.ServiceProvider;
         // Récupération du service configuré
-        CatalogManager catalogManager = services.GetRequiredService<CatalogManager>();
+        ICatalogManager catalogManager = services.GetRequiredService<ICatalogManager>();
 
         //use the service
         var allCatalog = catalogManager.GetCatalog();
