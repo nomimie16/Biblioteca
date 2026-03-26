@@ -1,6 +1,8 @@
 ﻿public interface IGenericRepository<T> where T : IEntity
 {
-    IEnumerable<T> GetAll();
-    T Get(int id);
+    
+    IEntity Add(IEntity entity);
+
+    IEnumerable<T> GetMultiple(Func<T, bool>? filter = null, params string[] includes);
 }
 

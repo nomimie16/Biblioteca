@@ -1,5 +1,6 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 public class Program
 {
     static void Main(string[] args)
@@ -14,10 +15,10 @@ public class Program
 
         };
 
-        var repository = new BookRepository(books);
-        var foundBook = repository.Get(1);
-        var getBooks = repository.GetAll();
-        var categoryAbooks = books.Where(book => book.Type == TypeBook.Aventure);
+        //var repository = new BookRepository(books);
+        //var foundBook = repository.Get(1);
+        //var getBooks = repository.GetAll();
+        //var categoryAbooks = books.Where(book => book.Type == TypeBook.Aventure);
 
         
 
@@ -36,37 +37,37 @@ public class Program
 
         }*/
 
-        CatalogManager catalogManager = new CatalogManager(repository);
+        //CatalogManager catalogManager = new CatalogManager(repository);
 
-        var allBooks = catalogManager.GetCatalog(); // recup tout les livres
-        var typeBooks = catalogManager.GetCatalog(TypeBook.Aventure); // recup tout les livres d'un type
-        var idBook = catalogManager.FindBook(1); // recup les livres avec un id 
+        //var allBooks = catalogManager.GetCatalog(); // recup tout les livres
+        //var typeBooks = catalogManager.GetCatalog(TypeBook.Aventure); // recup tout les livres d'un type
+        //var idBook = catalogManager.FindBook(1); // recup les livres avec un id 
 
        
-        Console.WriteLine("---------------------");
-        Console.WriteLine("ensemble des livres : ");
-        foreach (var book in allBooks)
-        {
-            Console.WriteLine(book.Name + " : " + book.Type);
-        }
+        //Console.WriteLine("---------------------");
+        //Console.WriteLine("ensemble des livres : ");
+        //foreach (var book in allBooks)
+        //{
+        //    Console.WriteLine(book.Name + " : " + book.Type);
+        //}
 
-        Console.WriteLine("---------------------");
-        Console.WriteLine("Livre de type Aventure : ");
-        foreach (var book in typeBooks)
-        {
-            Console.WriteLine(book.Name);
-        }
+        //Console.WriteLine("---------------------");
+        //Console.WriteLine("Livre de type Aventure : ");
+        //foreach (var book in typeBooks)
+        //{
+        //    Console.WriteLine(book.Name);
+        //}
 
-        Console.WriteLine("---------------------");
-        Console.WriteLine("Livres avec un id = "+ idBook.Id +" : "+ idBook.Name);
+        //Console.WriteLine("---------------------");
+        //Console.WriteLine("Livres avec un id = "+ idBook.Id +" : "+ idBook.Name);
 
         // créér le host avec la configuration des services
         var host = CreateHostBuilder(books);
 
         // recup le service depuis conteneur DI
-        ICatalogManager iCatalogManager = host.Services.GetRequiredService<ICatalogManager>();
+        ICatalogManager catalogManager = host.Services.GetRequiredService<ICatalogManager>();
 
-        // utilise le service
+        //utilise le service
         var adventureBooks = catalogManager.GetCatalog(TypeBook.Aventure);
 
         foreach (var book in adventureBooks)
@@ -77,7 +78,8 @@ public class Program
         using var serviceScope = host.Services.CreateScope();
         var services = serviceScope.ServiceProvider;
         // Récupération du service configuré
-        catalogManager = services.GetRequiredService<CatalogManager>();
+        //catalogManager = services.GetRequiredService<CatalogManager>();
+
 
     }
 
@@ -86,17 +88,23 @@ public class Program
         return Host.CreateDefaultBuilder()
             .ConfigureServices(services =>
             {
-                // enregistrement des données initiales
-                services.AddSingleton(books);
+
 
                 // enregistrement des repositories
-                services.AddTransient<IGenericRepository<Book>, BookRepository>();
+                services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+                //services.AddTransient<IGenericRepository<Book>, BookRepository>();
 
                 // enregistrement des services
                 services.AddTransient<ICatalogManager, CatalogManager>();
+                services.AddDbContext<LibraryContext>(options =>
+                {
+                    // Chemin vers la base de données
+                    string dbPath = Path.Combine(Directory.GetCurrentDirectory(), "library.db");
+                    options.UseSqlite($"Data Source={dbPath}");
+                });
+
                 
-                // enregistrement du CatalogManager 
-                services.AddTransient<CatalogManager>();
+
             })
             .Build();
     }

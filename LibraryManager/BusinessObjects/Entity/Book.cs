@@ -8,6 +8,9 @@
 
     public int Rate { get; set; }
 
+    public int Id_author { get; set; }
+
+    public Author Author { get; set; }
 
     public IEnumerable<Library> Libraries { get; set; }
 

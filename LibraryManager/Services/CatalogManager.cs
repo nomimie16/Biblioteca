@@ -10,21 +10,21 @@
     // return all the books
     public IEnumerable<Book> GetCatalog()
     {
-        return _bookRepository.GetAll();
+        return _bookRepository.GetMultiple();
     }
 
     // return bokks by type filter
     public IEnumerable<Book> GetCatalog(TypeBook type)
     {
         return _bookRepository
-            .GetAll()
+            .GetMultiple()
             .Where(b => b.Type == type);
     }
 
     // return book by id
     public Book FindBook(int id)
     {
-        return _bookRepository.Get(id);
+        return _bookRepository.GetMultiple(b => b.Id == id).FirstOrDefault();
     }
 }
 
