@@ -11,23 +11,12 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class, IEnti
         _dbSet = context.Set<T>();  // Set<T> : Accès générique à la table
     }
 
-    public IEnumerable<T> GetAll()
-    {
-        return _dbSet.ToList();
-    }
-
-    public T Get(int id)
-    {
-        return _dbSet.FirstOrDefault(e => e.Id == id);
-    }
-
     public T Add(T entity)
     {
         _dbSet.Add(entity);
         _context.SaveChanges();
         return entity;
     }
-
 
     public IEnumerable<T> GetMultiple(Func<T, bool>? filter = null, params string[] includes)
     {
