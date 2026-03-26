@@ -1,10 +1,10 @@
-﻿public class CatalogManager
+﻿public class CatalogManager : ICatalogManager
 {
     private readonly BookRepository _bookRepository;
 
-    public CatalogManager(List <Book> books)
+    public CatalogManager(BookRepository bookRepository)
     {
-        _bookRepository = new BookRepository(books);
+        _bookRepository = bookRepository;
     }
     public IEnumerable<Book> GetCatalog()
     {

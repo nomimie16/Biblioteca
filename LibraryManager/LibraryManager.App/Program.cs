@@ -1,5 +1,19 @@
-﻿public class Program
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+public class Program
 {
+    private static IHost CreateHostBuilder(List <Book> books)
+    {
+        return Host.CreateDefaultBuilder()
+            .ConfigureServices(services =>
+            {
+                services.AddSingleton<List<Book>>(books);//create book list
+                services.AddSingleton<BookRepository>();//create bookrepository
+                services.AddScoped<CatalogManager>();//create catalog manager
+            })
+            .Build();
+    }
+
     static void Main(string[] args)
     {
         List<Book> books = new List<Book>
@@ -11,8 +25,11 @@
             new Book { Id = 5, Name = "Titre 5", Type = TypeBook.Aventure },
         };
 
-        //create the dependancies manually
-        CatalogManager catalogManager = new CatalogManager(books);
+        var host = CreateHostBuilder(books);
+        using var serviceScope = host.Services.CreateScope();
+        var services = serviceScope.ServiceProvider;
+        // Récupération du service configuré
+        CatalogManager catalogManager = services.GetRequiredService<CatalogManager>();
 
         //use the service
         var allCatalog = catalogManager.GetCatalog();
@@ -25,6 +42,6 @@
         {
             Console.WriteLine($"- {book.Name}");
         }
-        Console.WriteLine($"Book found : {bookFound.Name}");
+        Console.WriteLine($"Book found : {bookFound?.Name}");
     }
 }
