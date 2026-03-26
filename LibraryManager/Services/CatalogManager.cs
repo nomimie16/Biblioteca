@@ -1,9 +1,8 @@
-﻿
-public class CatalogManager
+﻿public class CatalogManager : ICatalogManager
 {
-    private readonly BookRepository _bookRepository;
+    private readonly IGenericRepository<Book> _bookRepository;
 
-    public CatalogManager(BookRepository bookRepository)
+    public CatalogManager(IGenericRepository<Book> bookRepository)
     {
         _bookRepository = bookRepository;
     }

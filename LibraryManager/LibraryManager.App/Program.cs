@@ -1,8 +1,10 @@
-﻿public class Program
+﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+public class Program
 {
     static void Main(string[] args)
     {
-        // Creation de liste de livres
+        // creation de liste de livres
         List<Book> books = new List<Book>
         {
             new Book { Id = 1, Name = "Alice au pays des merveilles", Pages = 15, Type = TypeBook.Aventure },
@@ -58,5 +60,44 @@
         Console.WriteLine("---------------------");
         Console.WriteLine("Livres avec un id = "+ idBook.Id +" : "+ idBook.Name);
 
+        // créér le host avec la configuration des services
+        var host = CreateHostBuilder(books);
+
+        // recup le service depuis conteneur DI
+        ICatalogManager iCatalogManager = host.Services.GetRequiredService<ICatalogManager>();
+
+        // utilise le service
+        var adventureBooks = catalogManager.GetCatalog(TypeBook.Aventure);
+
+        foreach (var book in adventureBooks)
+        {
+            Console.WriteLine(book.Name);
+        }
+
+        using var serviceScope = host.Services.CreateScope();
+        var services = serviceScope.ServiceProvider;
+        // Récupération du service configuré
+        catalogManager = services.GetRequiredService<CatalogManager>();
+
+    }
+
+    private static IHost CreateHostBuilder(List<Book> books)
+    {
+        return Host.CreateDefaultBuilder()
+            .ConfigureServices(services =>
+            {
+                // enregistrement des données initiales
+                services.AddSingleton(books);
+
+                // enregistrement des repositories
+                services.AddTransient<IGenericRepository<Book>, BookRepository>();
+
+                // enregistrement des services
+                services.AddTransient<ICatalogManager, CatalogManager>();
+                
+                // enregistrement du CatalogManager 
+                services.AddTransient<CatalogManager>();
+            })
+            .Build();
     }
 }

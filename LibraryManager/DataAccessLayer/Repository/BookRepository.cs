@@ -1,5 +1,5 @@
 ﻿
-public class BookRepository
+public class BookRepository : IGenericRepository<Book>
 {
 
     private List<Book> _books;
