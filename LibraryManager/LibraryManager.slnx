@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Tests/">
+    <Project Path="Service.Test/Service.Test.csproj" Id="c34ae01e-bf0e-4e26-bbd7-a38242448b36" />
+  </Folder>
   <Project Path="BusinessObjects/BusinessObjects.csproj" Id="fb331ac3-17b3-4091-a0b4-611fd4caaf6c" />
   <Project Path="DataAccessLayer/DataAccessLayer.csproj" Id="82afff0b-be25-437c-bd56-08dcd1b9abbb" />
   <Project Path="LibraryManager.App/LibraryManager.App.csproj" />
