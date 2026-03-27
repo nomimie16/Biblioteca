@@ -32,4 +32,10 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class, IEnti
 
         return query.ToList();
     }
+    public void Delete(int id)
+    {
+        var entity = _dbSet.FirstOrDefault(b => b.Id == id);
+        _dbSet.Remove(entity);
+        _context.SaveChanges();
+    }
 }

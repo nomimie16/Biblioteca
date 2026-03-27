@@ -18,4 +18,17 @@
     {
         return _bookRepository.GetMultiple(filter: b => b.Id == id).FirstOrDefault();
     }
+    public Book AddBook(Book book)
+    {
+        return _bookRepository.Add(book);
+    }
+    public void DeleteBook (int id)
+    {
+        _bookRepository.Delete(id);
+    }
+    public Book GetTopRated()
+    {
+        return _bookRepository.GetMultiple().MaxBy(b => b.Rate);
+    }
+
 }
