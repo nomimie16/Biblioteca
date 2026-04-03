@@ -12,6 +12,10 @@ public class LibraryContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Book>()
+            .Property(b => b.Type)
+            .HasConversion<string>();
+
         // One-to-Many (1book a 1 author/1author a pls books)
         modelBuilder.Entity<Book>()
             .HasOne(b => b.Author)

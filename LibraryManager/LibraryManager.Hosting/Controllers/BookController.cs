@@ -25,9 +25,9 @@ namespace LibraryManager.Hosting.BookControllers
         }
 
         [HttpGet("type/{type}")]
-        public IEnumerable<Book> GetByType(string Type)
+        public IEnumerable<Book> GetByType(string type)
         {
-            return _catalogManager.GetCatalog(Enum.Parse<TypeBook>(Type));
+            return _catalogManager.GetCatalog(Enum.Parse<TypeBook>(type, ignoreCase: true));
         }
 
         [HttpPost]

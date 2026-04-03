@@ -38,4 +38,5 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class, IEnti
         _dbSet.Remove(entity);
         _context.SaveChanges();
     }
+
 }

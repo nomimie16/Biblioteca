@@ -3,5 +3,8 @@
     Aventure,
     Policier,
     Jeunesse,
-    Poètique
+    Poètique,
+    Enseignement,
+    Histoire,
+    Juridique
 }
