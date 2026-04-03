@@ -6,4 +6,5 @@
     Book AddBook(Book book);
     void DeleteBook(int id);
     Book GetTopRated();
+    IEnumerable<Book> GetFilteredBooks(TypeBook? type = null, string? authorName = null);
 }

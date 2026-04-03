@@ -7,6 +7,11 @@ namespace LibraryManager.Hosting.BookControllers
     [Route("books")]
     public class BookController : ControllerBase
     {
+        public BookController(ICatalogManager catalogManager)
+        {
+            _catalogManager = catalogManager;
+        }
+
         private readonly ICatalogManager _catalogManager;
             private BookDto ToDto(Book book)
             {
@@ -61,6 +66,26 @@ namespace LibraryManager.Hosting.BookControllers
         {
             _catalogManager.DeleteBook(id);
             return NoContent();
+        }
+
+        private BookAuthorDto ToBookAuthorDto(Book book)
+        {
+            return new BookAuthorDto
+            {
+                Id = book.Id,
+                Name = book.Name,
+                Pages = book.Pages,
+                Type = book.Type.ToString(),
+                AuthorFirstName = book.Author?.FirstName,
+                AuthorLastName = book.Author?.LastName,
+                Libraries = book.Libraries?.Select(l => l.Name) ?? new List<string>()
+            };
+        }
+
+        [HttpGet("filteredBooks")]
+        public IActionResult GetFilteredBooks([FromQuery] TypeBook? type, [FromQuery] string? authorName)
+        {
+            return Ok(_catalogManager.GetFilteredBooks(type, authorName).Select(ToBookAuthorDto));
         }
     }
 }

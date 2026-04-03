@@ -26,6 +26,10 @@ public class LibraryContext : DbContext
         modelBuilder.Entity<Book>()
             .HasMany(b => b.Libraries)
             .WithMany(l => l.Books)
-            .UsingEntity("stock");
+            .UsingEntity<Dictionary<string, object>>(
+                "stock",
+                j => j.HasOne<Library>().WithMany().HasForeignKey("id_library"),
+                j => j.HasOne<Book>().WithMany().HasForeignKey("id_book")
+            );
     }
 }

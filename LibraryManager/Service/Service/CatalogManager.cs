@@ -30,5 +30,14 @@
     {
         return _bookRepository.GetMultiple().MaxBy(b => b.Rate);
     }
-
+    public IEnumerable<Book> GetFilteredBooks(TypeBook? type = null, string? authorName = null)
+    {
+        return _bookRepository.GetMultiple(
+            b => (type == null || b.Type == type) &&
+                 (authorName == null ||
+                  (b.Author != null &&
+                   (b.Author.FirstName.Contains(authorName) || b.Author.LastName.Contains(authorName)))),
+            "Author", "Libraries"
+        );
+    }
 }
