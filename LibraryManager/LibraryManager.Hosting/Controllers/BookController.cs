@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using BusinessObjects.DataTransfertObject;
 
 namespace LibraryManager.Hosting.BookControllers
 {
@@ -7,15 +8,26 @@ namespace LibraryManager.Hosting.BookControllers
     public class BookController : ControllerBase
     {
         private readonly ICatalogManager _catalogManager;
-        public BookController(ICatalogManager catalogManager)
-        {
-            _catalogManager = catalogManager;
-        }
+            private BookDto ToDto(Book book)
+            {
+                return new BookDto
+                {
+                    Id = book.Id,
+                    Name = book.Name,
+                    Pages = book.Pages,
+                    Type = book.Type.ToString(),
+                    Author = book.Author == null ? null : new AuthorDto
+                    {
+                        FirstName = book.Author.FirstName,
+                        LastName = book.Author.LastName
+                    }
+                };
+            }
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            return Ok(_catalogManager.GetCatalog());
+            return Ok(_catalogManager.GetCatalog().Select(ToDto));
         }
 
         [HttpGet("{id}")]
@@ -23,25 +35,25 @@ namespace LibraryManager.Hosting.BookControllers
         {
             var book = _catalogManager.FindBook(id);
             if (book == null) return NotFound();
-            return Ok(book);
+            return Ok(ToDto(book));
         }
 
         [HttpGet("type/{type}")]
         public IActionResult GetByType(string type)
         {
-            return Ok(_catalogManager.GetCatalog(Enum.Parse<TypeBook>(type, ignoreCase: true)));
-        }
-
-        [HttpPost]
-        public IActionResult Post([FromBody] Book book)
-        {
-            return Ok(_catalogManager.AddBook(book));
+            return Ok(_catalogManager.GetCatalog(Enum.Parse<TypeBook>(type, ignoreCase: true)).Select(ToDto));
         }
 
         [HttpGet("top-rated")]
         public IActionResult GetTopRated()
         {
-            return Ok(_catalogManager.GetCatalog().MaxBy(b => b.Rate));
+            return Ok(ToDto(_catalogManager.GetTopRated()));
+        }
+
+        [HttpPost]
+        public IActionResult Post([FromBody] Book book)
+        {
+            return Ok(ToDto(_catalogManager.AddBook(book)));
         }
 
         [HttpDelete("{id}")]
