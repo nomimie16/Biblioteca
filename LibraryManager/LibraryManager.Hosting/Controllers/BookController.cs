@@ -13,39 +13,42 @@ namespace LibraryManager.Hosting.BookControllers
         }
 
         [HttpGet]
-        public IEnumerable<Book> GetAll()
+        public IActionResult GetAll()
         {
-            return _catalogManager.GetCatalog();
+            return Ok(_catalogManager.GetCatalog());
         }
 
         [HttpGet("{id}")]
-        public Book GetById(int id)
+        public IActionResult GetById(int id)
         {
-            return _catalogManager.FindBook(id);
+            var book = _catalogManager.FindBook(id);
+            if (book == null) return NotFound();
+            return Ok(book);
         }
 
         [HttpGet("type/{type}")]
-        public IEnumerable<Book> GetByType(string type)
+        public IActionResult GetByType(string type)
         {
-            return _catalogManager.GetCatalog(Enum.Parse<TypeBook>(type, ignoreCase: true));
+            return Ok(_catalogManager.GetCatalog(Enum.Parse<TypeBook>(type, ignoreCase: true)));
         }
 
         [HttpPost]
-        public Book Post([FromBody] Book book)
+        public IActionResult Post([FromBody] Book book)
         {
-            return _catalogManager.AddBook(book);
+            return Ok(_catalogManager.AddBook(book));
         }
 
         [HttpGet("top-rated")]
-        public Book GetTopRated()
+        public IActionResult GetTopRated()
         {
-            return _catalogManager.GetCatalog().MaxBy(b => b.Rate);
+            return Ok(_catalogManager.GetCatalog().MaxBy(b => b.Rate));
         }
 
         [HttpDelete("{id}")]
-        public void DeleteBook(int id)
+        public IActionResult DeleteBook(int id)
         {
             _catalogManager.DeleteBook(id);
+            return NoContent();
         }
     }
 }
