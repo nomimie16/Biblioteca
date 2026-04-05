@@ -6,4 +6,5 @@
   <Project Path="DataAccessLayer/DataAccessLayer.csproj" Id="82afff0b-be25-437c-bd56-08dcd1b9abbb" />
   <Project Path="LibraryManager.App/LibraryManager.App.csproj" />
   <Project Path="Services/Services.csproj" Id="8a2b1a7a-e077-4919-a986-61448f27f816" />
+  <Project Path="WebApplication1/LibraryManager.Hosting.csproj" Id="f67901fa-9a90-48c4-b146-dda30784b356" />
 </Solution>
